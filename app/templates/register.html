@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}Register — Expense Tracker{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper min-vh-100">
+
+    <!-- Floating finance icons -->
+    <div class="auth-bg-icons" aria-hidden="true">
+        <span>💰</span>
+        <span>📊</span>
+        <span>💳</span>
+        <span>📈</span>
+        <span>🏦</span>
+        <span>💵</span>
+        <span>📉</span>
+        <span>🪙</span>
+        <span>💹</span>
+        <span>🧾</span>
+    </div>
+
+    <div class="container position-relative" style="z-index:1;">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+
+                <!-- Brand -->
+                <div class="text-center mb-4 auth-heading">
+                    <div class="brand-icon mb-3">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <h2 class="fw-bold">Create your account</h2>
+                    <p class="mb-0">Start tracking your expenses today</p>
+                </div>
+
+                <!-- Glass Card -->
+                <div class="card auth-card border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+
+                            <!-- Username -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        class="form-control border-start-0 ps-0"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Choose a username"
+                                        value="{{ username or '' }}"
+                                        required
+                                        autofocus
+                                        minlength="3"
+                                    />
+                                </div>
+                                <div class="form-text" style="color:rgba(255,255,255,0.4);">At least 3 characters.</div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">Email address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+                                    <input
+                                        type="email"
+                                        class="form-control border-start-0 ps-0"
+                                        id="email"
+                                        name="email"
+                                        placeholder="you@example.com"
+                                        value="{{ email or '' }}"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-semibold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input
+                                        type="password"
+                                        class="form-control border-start-0 ps-0"
+                                        id="password"
+                                        name="password"
+                                        placeholder="At least 6 characters"
+                                        required
+                                        minlength="6"
+                                    />
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1" title="Show/hide password">
+                                        <i class="bi bi-eye" id="toggleIcon"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text" style="color:rgba(255,255,255,0.4);">At least 6 characters.</div>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mb-4">
+                                <label for="confirm_password" class="form-label fw-semibold">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input
+                                        type="password"
+                                        class="form-control border-start-0 ps-0"
+                                        id="confirm_password"
+                                        name="confirm_password"
+                                        placeholder="Repeat your password"
+                                        required
+                                    />
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleConfirm" tabindex="-1" title="Show/hide password">
+                                        <i class="bi bi-eye" id="toggleIconConfirm"></i>
+                                    </button>
+                                </div>
+                                <div id="pwMatchFeedback" class="form-text"></div>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-auth-submit btn-lg">
+                                    <i class="bi bi-person-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Login Link -->
+                <p class="text-center mt-4 auth-bottom-link">
+                    Already have an account?
+                    <a href="{{ url_for('auth.login') }}">Sign in</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Independent show/hide for password field
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const input = document.getElementById('password');
+        const icon = document.getElementById('toggleIcon');
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+
+    // Independent show/hide for confirm password field
+    document.getElementById('toggleConfirm').addEventListener('click', function () {
+        const input = document.getElementById('confirm_password');
+        const icon = document.getElementById('toggleIconConfirm');
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+
+    // Live password match feedback
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    const feedback = document.getElementById('pwMatchFeedback');
+
+    function checkMatch() {
+        if (!confirmInput.value) {
+            feedback.textContent = '';
+            confirmInput.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+        if (passwordInput.value === confirmInput.value) {
+            feedback.textContent = '✓ Passwords match';
+            feedback.style.color = '#10b981';
+            confirmInput.classList.remove('is-invalid');
+            confirmInput.classList.add('is-valid');
+        } else {
+            feedback.textContent = '✗ Passwords do not match';
+            feedback.style.color = '#ef4444';
+            confirmInput.classList.remove('is-valid');
+            confirmInput.classList.add('is-invalid');
+        }
+    }
+
+    confirmInput.addEventListener('input', checkMatch);
+    passwordInput.addEventListener('input', checkMatch);
+
+    // Block form submission if passwords don't match
+    document.querySelector('form').addEventListener('submit', function (e) {
+        if (passwordInput.value !== confirmInput.value) {
+            e.preventDefault();
+            confirmInput.focus();
+            feedback.textContent = '✗ Passwords do not match — please fix before submitting.';
+            feedback.style.color = '#ef4444';
+        }
+    });
+</script>
+{% endblock %}
